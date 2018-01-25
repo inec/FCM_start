@@ -2,9 +2,12 @@ package com.joemarini.fcmexample;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "FCMExample: ";
@@ -18,13 +21,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // TODO: get the FCM instance default token
-
+         m_FCMtoken= FirebaseInstanceId.getInstance().getToken();
         tvMsg = (TextView)findViewById(R.id.textView2);
 
         // TODO: Log the token to debug output so we can copy it
         ((Button)findViewById(R.id.btnLogToken)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //  Log.d(TAG, msg: "FCM token:"+m_FCMtoken);
+                Log.d(TAG, "  FCM_FCM ttoken:"+m_FCMtoken);
+               // String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+               // Log.d("CHICHI", "Refreshed ttoken: " + refreshedToken);
             }
         });
 
@@ -32,7 +39,9 @@ public class MainActivity extends AppCompatActivity {
         ((Button)findViewById(R.id.btnSubscribe)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
             }
+
         });
 
         // TODO: unsubscribe from a topic
