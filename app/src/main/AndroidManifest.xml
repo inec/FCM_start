@@ -19,6 +19,19 @@
         </activity>
 
         <!-- TODO: Add Firebase Services here -->
+        <service android:exported="false"
+            android:name=".FCMExampleMsgService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service android:exported="false"
+            android:name=".FCMInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
         <service
             android:name=".MyFirebaseInstanceIDService">
             <intent-filter>
