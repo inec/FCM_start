@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
            for (String key:getIntent().getExtras().keySet()){
     Object val=getIntent().getExtras().get(key);
                Log.d(TAG,"Key:"+key+" val:"+val+"\n");
-               lmsg+="Key:"+key+" val:"+val+"\n";
+               lmsg += "Key:"+key+" val:"+ val+"\n";
 
            }
             tvMsg.setText(lmsg);
