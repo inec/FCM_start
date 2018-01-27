@@ -8,12 +8,17 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.FirebaseInstanceIdReceiver;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "FCMExample: ";
 
     private String m_FCMtoken;
     private TextView tvMsg;
+
+    private FirebaseRemoteConfig mFRConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         // TODO: get the FCM instance default token
          m_FCMtoken= FirebaseInstanceId.getInstance().getToken();
         tvMsg = (TextView)findViewById(R.id.textView2);
-
+        mFRConfig = FirebaseRemoteConfig.getInstance();
         // TODO: Log the token to debug output so we can copy it
         ((Button)findViewById(R.id.btnLogToken)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        FirebaseRemoteConfigSettings configSettings= new
+                FirebaseRemoteConfigSettings.Builder().setDeveloperModeEnabled(BuildConfig.DEBUG).build();
+
+        mFRConfig.setConfigSettings(configSettings);
+        mFRConfig.setDefaults(R.xml.firstlook_config_params);
         // TODO: When the activity starts up, look for intent information
         // that may have been passed in from the Notification tap
         if (getIntent().getExtras() != null) {
@@ -66,6 +76,6 @@ public class MainActivity extends AppCompatActivity {
         else {
             tvMsg.setText("No launch information");
         }
-    }
+    } //end of oncreate
 
 }
