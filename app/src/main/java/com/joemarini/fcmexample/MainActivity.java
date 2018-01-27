@@ -1,5 +1,6 @@
 package com.joemarini.fcmexample;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdReceiver;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -15,6 +18,10 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "FCMExample: ";
 
+    private final String CONFIG_PROMO_MESSAGE_KEY="promo_message";
+    private final String CONFIG_PROMO_ENABLED_KEY="promo_enabled";
+    private long  PROMO_CACHE_DURATION=1800;
+    private final int MIN_SESSION_DURATION=5000;
     private String m_FCMtoken;
     private TextView tvMsg;
 
@@ -56,17 +63,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        FirebaseRemoteConfigSettings configSettings= new
+        FirebaseRemoteConfigSettings configSettings = new
                 FirebaseRemoteConfigSettings.Builder().setDeveloperModeEnabled(BuildConfig.DEBUG).build();
 
         mFRConfig.setConfigSettings(configSettings);
         mFRConfig.setDefaults(R.xml.firstlook_config_params);
+
+
         // TODO: When the activity starts up, look for intent information
         // that may have been passed in from the Notification tap
         if (getIntent().getExtras() != null) {
            String lmsg="";
            for (String key:getIntent().getExtras().keySet()){
-    Object val=getIntent().getExtras().get(key);
+            Object val=getIntent().getExtras().get(key);
                Log.d(TAG,"Key:"+key+" val:"+val+"\n");
                lmsg += "Key:"+key+" val:"+ val+"\n";
 
@@ -76,6 +85,39 @@ public class MainActivity extends AppCompatActivity {
         else {
             tvMsg.setText("No launch information");
         }
+
+        checkPromoEnabled();
     } //end of oncreate
+
+   private void checkPromoEnabled(){
+        if(mFRConfig.getInfo().getConfigSettings().isDeveloperModeEnabled() ){
+            PROMO_CACHE_DURATION=0;
+        }
+        mFRConfig.fetch(PROMO_CACHE_DURATION).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Log.i(TAG,"suc");
+                    mFRConfig.activateFetched();
+                }else{
+                    Log.e(TAG,"failed");
+                }
+
+            }
+        });
+   }
+
+   private void showPromoButton(){
+       boolean showBtn=false;
+       String promoMsg="";
+
+       //logic
+       showBtn=mFRConfig.getBoolean(CONFIG_PROMO_ENABLED_KEY);
+promoMsg=mFRConfig.getString(CONFIG_PROMO_MESSAGE_KEY);
+
+       Button btn=(Button)findViewById(R.id.btnPromo);
+       btn.setVisibility(showBtn ? View.VISIBLE : View.INVISIBLE);
+       btn.setText(promoMsg);
+   }
 
 }
