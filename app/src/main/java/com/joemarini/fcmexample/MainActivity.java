@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdReceiver;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         ((Button)findViewById(R.id.btnSubscribe)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                FirebaseMessaging.getInstance().subscribeToTopic("test-topic");
             }
 
         });
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         ((Button)findViewById(R.id.btnUnsubscribe)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FirebaseMessaging.getInstance().unsubscribeFromTopic("test-topic");
             }
         });
 
